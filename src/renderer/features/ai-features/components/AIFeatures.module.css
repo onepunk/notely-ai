@@ -1,0 +1,538 @@
+/* Downloaded models list */
+.downloadedModelsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.downloadedModelsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xs);
+}
+
+.downloadedModelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  transition: background-color 0.1s ease;
+}
+
+.downloadedModelRow:hover {
+  background: var(--bg-hover);
+}
+
+.downloadedModelDefault {
+  background: rgb(var(--brand-rgb) / 12%);
+  border-color: rgb(var(--brand-rgb) / 35%);
+}
+
+.downloadedModelDefault:hover {
+  background: rgb(var(--brand-rgb) / 16%);
+}
+
+.downloadedModelInfo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.downloadedModelName {
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.downloadedModelSize {
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.downloadedModelActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+/* Tier labels */
+.tierLabelGreen {
+  color: var(--brand-secondary);
+  font-weight: 600;
+}
+
+.tierSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.tierHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.tierDesc {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+/* Model settings parameters */
+.parameterRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.parameterRow:last-child {
+  border-bottom: none;
+}
+
+.parameterLabel {
+  flex: 0 0 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.parameterLabelText {
+  font-weight: var(--font-weight-medium);
+}
+
+.parameterDescription {
+  color: var(--text-tertiary);
+}
+
+.parameterControl {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+.parameterSlider {
+  flex: 1;
+  min-width: 120px;
+}
+
+.parameterSpinButton {
+  width: 100px;
+}
+
+.settingsActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--stroke);
+  margin-top: var(--spacing-md);
+}
+
+.settingsActionsRight {
+  margin-left: auto;
+}
+
+/* Prompts tab layout */
+.promptsLayout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--spacing-md);
+  height: 100%;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+/* Template list sidebar */
+.templateList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-right: 1px solid var(--stroke);
+  padding-right: var(--spacing-md);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+.templateItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  width: 100%;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.templateItem:hover {
+  background: var(--bg-hover);
+}
+
+.templateItemActive {
+  background: rgb(var(--brand-rgb) / 18%);
+  box-shadow: inset 0 0 0 1px rgb(var(--brand-rgb) / 35%);
+}
+
+.templateItemActive:hover {
+  background: rgb(var(--brand-rgb) / 22%);
+}
+
+.templateItemName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.templateItemDelete {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  flex-shrink: 0;
+}
+
+.templateItem:hover .templateItemDelete {
+  opacity: 1;
+}
+
+.newTemplateButton {
+  margin-top: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.newTemplateCreateRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+/* Template editor */
+.templateEditor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+.templateEditorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.templateEditorActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.readOnlyNotice {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgb(var(--brand-rgb) / 8%);
+  border: 1px solid rgb(var(--brand-rgb) / 25%);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+}
+
+.promptTextarea {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--spacing-md);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  background: var(--bg-container);
+  color: var(--text-primary);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: var(--font-size-sm);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.12s ease;
+  box-sizing: border-box;
+}
+
+.promptTextarea:focus {
+  border-color: var(--brand-secondary);
+}
+
+.promptTextarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.promptTextareaLabel {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+}
+
+.promptFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+/* Output Structure two-section layout */
+.promptSectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.promptSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+
+.promptSectionHeader {
+  color: var(--text-primary);
+}
+
+.promptSectionDescription {
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.promptPlaceholderHint {
+  color: var(--text-tertiary);
+  font-style: italic;
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Sub-tabs (reused across Model Management, Model Settings, and Prompts) */
+.subTabs,
+.promptSubTabs {
+  display: flex;
+  gap: var(--spacing-xs);
+  border-bottom: 1px solid var(--stroke);
+  padding-bottom: var(--spacing-xs);
+}
+
+.subTab,
+.promptSubTab {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.subTab:hover,
+.promptSubTab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.subTabActive,
+.promptSubTabActive {
+  background: rgb(var(--brand-rgb) / 18%);
+  color: var(--text-primary);
+}
+
+/* Model list in model management */
+.modelList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Active downloads banner */
+.activeDownloads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Current model display */
+.currentModel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+}
+
+.currentModelInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.currentModelIcon {
+  color: var(--brand-primary);
+}
+
+.currentModelText {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.currentModelStats {
+  color: var(--text-tertiary);
+}
+
+.loadingState {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.noModel {
+  color: var(--text-tertiary);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.errorText {
+  color: rgb(209 52 56);
+  margin-top: var(--spacing-sm);
+}
+
+.recommendedBadge {
+  margin-left: var(--spacing-sm);
+}
+
+/* License required */
+.licenseRequired {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+}
+
+.licenseIcon {
+  color: var(--brand-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.licenseText {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* Delete confirm dialog */
+.promptEditorDialog {
+  max-width: 700px;
+  width: 90vw;
+  max-height: 80vh;
+}
+
+/* Whisper model list */
+.whisperModelList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.whisperModelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  transition: background-color 0.1s ease;
+}
+
+.whisperModelRow:hover {
+  background: var(--bg-hover);
+}
+
+.whisperModelDefault {
+  background: rgb(var(--brand-rgb) / 12%);
+  border-color: rgb(var(--brand-rgb) / 35%);
+}
+
+.whisperModelDefault:hover {
+  background: rgb(var(--brand-rgb) / 16%);
+}
+
+.whisperModelInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.whisperModelMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.whisperModelDescription {
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.whisperModelName {
+  white-space: nowrap;
+}
+
+.whisperModelSize {
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.whisperModelActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}

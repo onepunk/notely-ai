@@ -1,0 +1,18 @@
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+/* Remove bottom border separators when cards are side by side */
+.cardGrid > section {
+  border-bottom: none;
+}
+
+@media (max-width: 720px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}

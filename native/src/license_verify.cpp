@@ -1,0 +1,420 @@
+/**
+ * License JWT Verification - Native C++ implementation
+ *
+ * Implements RS256 JWT signature verification using OpenSSL EVP_DigestVerify.
+ * The RSA public key is embedded as a compiled byte array (no PEM file needed).
+ * Uses nlohmann/json for parsing JWT claims.
+ */
+
+#include "license_verify.h"
+
+#include <openssl/bio.h>
+#include <openssl/evp.h>
+#include <openssl/pem.h>
+#include <openssl/rsa.h>
+#include <openssl/err.h>
+
+#include <nlohmann/json.hpp>
+
+#include <algorithm>
+#include <chrono>
+#include <cstring>
+#include <regex>
+#include <string>
+#include <vector>
+
+namespace notely {
+
+// ---- Embedded RSA Public Key (PEM) ----
+// This is the license-public-key.pem content compiled into the binary.
+// Stored as a byte array to avoid string literal scanning.
+
+static const unsigned char EMBEDDED_PUBLIC_KEY[] = {
+  0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x42, 0x45, 0x47, 0x49, 0x4e, 0x20, 0x50,
+  0x55, 0x42, 0x4c, 0x49, 0x43, 0x20, 0x4b, 0x45, 0x59, 0x2d, 0x2d, 0x2d,
+  0x2d, 0x2d, 0x0a, // -----BEGIN PUBLIC KEY-----\n
+  0x4d, 0x49, 0x49, 0x43, 0x49, 0x6a, 0x41, 0x4e, 0x42, 0x67, 0x6b, 0x71,
+  0x68, 0x6b, 0x69, 0x47, 0x39, 0x77, 0x30, 0x42, 0x41, 0x51, 0x45, 0x46,
+  0x41, 0x41, 0x4f, 0x43, 0x41, 0x67, 0x38, 0x41, 0x4d, 0x49, 0x49, 0x43,
+  0x43, 0x67, 0x4b, 0x43, 0x41, 0x67, 0x45, 0x41, 0x71, 0x57, 0x71, 0x5a,
+  0x4e, 0x4b, 0x67, 0x75, 0x6e, 0x56, 0x48, 0x63, 0x68, 0x6f, 0x57, 0x58,
+  0x79, 0x2b, 0x61, 0x2b, 0x0a, // MIICIjANBgkqhki...y+a+\n
+  0x42, 0x59, 0x73, 0x58, 0x6a, 0x43, 0x53, 0x35, 0x49, 0x4b, 0x42, 0x49,
+  0x55, 0x7a, 0x51, 0x72, 0x62, 0x67, 0x65, 0x62, 0x68, 0x4e, 0x69, 0x70,
+  0x43, 0x62, 0x74, 0x33, 0x64, 0x30, 0x4e, 0x7a, 0x79, 0x78, 0x34, 0x6e,
+  0x73, 0x4f, 0x4b, 0x66, 0x45, 0x54, 0x68, 0x5a, 0x62, 0x47, 0x7a, 0x54,
+  0x5a, 0x41, 0x71, 0x45, 0x66, 0x47, 0x35, 0x56, 0x7a, 0x32, 0x56, 0x62,
+  0x78, 0x43, 0x33, 0x64, 0x0a, // BYsXjCS5IKBIU...xC3d\n
+  0x63, 0x37, 0x72, 0x5a, 0x4e, 0x65, 0x34, 0x6d, 0x79, 0x65, 0x35, 0x77,
+  0x57, 0x59, 0x79, 0x65, 0x75, 0x6b, 0x6e, 0x71, 0x64, 0x61, 0x4b, 0x37,
+  0x5a, 0x39, 0x6d, 0x44, 0x79, 0x69, 0x4b, 0x33, 0x71, 0x61, 0x2b, 0x70,
+  0x69, 0x6b, 0x76, 0x6e, 0x66, 0x55, 0x62, 0x5a, 0x6a, 0x6a, 0x74, 0x62,
+  0x30, 0x36, 0x39, 0x38, 0x6e, 0x78, 0x72, 0x38, 0x31, 0x70, 0x57, 0x38,
+  0x56, 0x6d, 0x45, 0x4c, 0x0a, // c7rZNe4...VmEL\n
+  0x4c, 0x5a, 0x76, 0x42, 0x42, 0x78, 0x75, 0x56, 0x6c, 0x58, 0x47, 0x70,
+  0x6f, 0x71, 0x5a, 0x38, 0x7a, 0x66, 0x46, 0x38, 0x73, 0x76, 0x38, 0x4c,
+  0x55, 0x46, 0x54, 0x43, 0x6a, 0x44, 0x34, 0x41, 0x68, 0x75, 0x69, 0x2b,
+  0x38, 0x4f, 0x75, 0x6f, 0x2b, 0x48, 0x6c, 0x6b, 0x70, 0x46, 0x39, 0x2f,
+  0x6e, 0x75, 0x6a, 0x4d, 0x31, 0x31, 0x2b, 0x57, 0x69, 0x68, 0x69, 0x50,
+  0x46, 0x6d, 0x66, 0x74, 0x0a, // LZvBBx...mft\n
+  0x63, 0x37, 0x4e, 0x66, 0x4d, 0x6c, 0x51, 0x31, 0x71, 0x45, 0x74, 0x54,
+  0x68, 0x63, 0x66, 0x50, 0x67, 0x41, 0x6c, 0x79, 0x36, 0x4c, 0x63, 0x69,
+  0x48, 0x77, 0x61, 0x35, 0x6d, 0x38, 0x33, 0x76, 0x51, 0x50, 0x76, 0x73,
+  0x74, 0x74, 0x78, 0x59, 0x61, 0x4d, 0x37, 0x37, 0x71, 0x69, 0x78, 0x45,
+  0x2b, 0x46, 0x37, 0x75, 0x39, 0x53, 0x36, 0x32, 0x6b, 0x37, 0x63, 0x56,
+  0x79, 0x31, 0x4b, 0x57, 0x0a, // c7NfMl...KW\n
+  0x53, 0x4c, 0x4c, 0x2b, 0x71, 0x50, 0x7a, 0x76, 0x73, 0x49, 0x77, 0x76,
+  0x57, 0x4b, 0x78, 0x6b, 0x54, 0x37, 0x50, 0x4b, 0x70, 0x4e, 0x4b, 0x59,
+  0x72, 0x6b, 0x4f, 0x39, 0x48, 0x61, 0x38, 0x5a, 0x5a, 0x74, 0x38, 0x6e,
+  0x36, 0x52, 0x4c, 0x66, 0x39, 0x72, 0x35, 0x4e, 0x6b, 0x45, 0x30, 0x58,
+  0x74, 0x62, 0x77, 0x78, 0x57, 0x67, 0x77, 0x76, 0x45, 0x35, 0x33, 0x2b,
+  0x54, 0x44, 0x54, 0x36, 0x0a, // SLL+qP...DT6\n
+  0x68, 0x57, 0x63, 0x69, 0x32, 0x30, 0x32, 0x72, 0x74, 0x4c, 0x4f, 0x43,
+  0x37, 0x62, 0x77, 0x44, 0x67, 0x4f, 0x73, 0x51, 0x42, 0x74, 0x53, 0x6f,
+  0x4d, 0x54, 0x6e, 0x31, 0x68, 0x70, 0x45, 0x63, 0x43, 0x53, 0x54, 0x5a,
+  0x64, 0x42, 0x54, 0x6a, 0x35, 0x6a, 0x55, 0x47, 0x58, 0x70, 0x6c, 0x77,
+  0x56, 0x42, 0x53, 0x4c, 0x33, 0x35, 0x4d, 0x4f, 0x6b, 0x7a, 0x79, 0x44,
+  0x30, 0x45, 0x44, 0x71, 0x0a, // hWci20...Dq\n
+  0x73, 0x53, 0x58, 0x53, 0x46, 0x68, 0x7a, 0x32, 0x42, 0x61, 0x71, 0x67,
+  0x74, 0x78, 0x2b, 0x56, 0x75, 0x49, 0x65, 0x45, 0x2f, 0x47, 0x68, 0x71,
+  0x4d, 0x63, 0x64, 0x69, 0x48, 0x49, 0x48, 0x75, 0x64, 0x35, 0x6e, 0x67,
+  0x6e, 0x6e, 0x4a, 0x5a, 0x35, 0x37, 0x38, 0x44, 0x72, 0x4e, 0x61, 0x75,
+  0x5a, 0x71, 0x67, 0x6f, 0x65, 0x4c, 0x76, 0x4c, 0x52, 0x44, 0x52, 0x71,
+  0x66, 0x50, 0x78, 0x65, 0x0a, // sSXSFh...Pxe\n
+  0x4c, 0x51, 0x37, 0x6b, 0x43, 0x34, 0x56, 0x45, 0x6f, 0x70, 0x63, 0x57,
+  0x41, 0x48, 0x57, 0x71, 0x52, 0x78, 0x54, 0x76, 0x35, 0x44, 0x54, 0x45,
+  0x78, 0x4a, 0x50, 0x62, 0x75, 0x53, 0x48, 0x51, 0x54, 0x79, 0x69, 0x41,
+  0x71, 0x64, 0x64, 0x6d, 0x37, 0x2f, 0x4d, 0x4c, 0x56, 0x4d, 0x54, 0x72,
+  0x6d, 0x77, 0x52, 0x64, 0x32, 0x56, 0x30, 0x6f, 0x6c, 0x76, 0x48, 0x50,
+  0x65, 0x6f, 0x76, 0x6c, 0x0a, // LQ7kC4...ovl\n
+  0x77, 0x34, 0x75, 0x33, 0x7a, 0x32, 0x77, 0x57, 0x39, 0x6e, 0x44, 0x4d,
+  0x72, 0x6e, 0x54, 0x47, 0x4f, 0x78, 0x7a, 0x49, 0x42, 0x45, 0x59, 0x7a,
+  0x64, 0x65, 0x50, 0x36, 0x7a, 0x69, 0x73, 0x32, 0x67, 0x63, 0x43, 0x70,
+  0x55, 0x4c, 0x75, 0x34, 0x7a, 0x71, 0x48, 0x4a, 0x6d, 0x4b, 0x2b, 0x34,
+  0x4f, 0x39, 0x4f, 0x5a, 0x2f, 0x51, 0x6d, 0x71, 0x45, 0x51, 0x61, 0x6c,
+  0x63, 0x72, 0x57, 0x46, 0x0a, // w4u3z2...WF\n
+  0x50, 0x56, 0x46, 0x75, 0x33, 0x62, 0x5a, 0x79, 0x71, 0x73, 0x31, 0x67,
+  0x33, 0x66, 0x6e, 0x71, 0x6e, 0x36, 0x4e, 0x6e, 0x7a, 0x63, 0x49, 0x49,
+  0x32, 0x38, 0x79, 0x6c, 0x4a, 0x53, 0x73, 0x76, 0x79, 0x5a, 0x42, 0x6e,
+  0x4d, 0x41, 0x36, 0x52, 0x6d, 0x48, 0x50, 0x39, 0x70, 0x74, 0x6c, 0x52,
+  0x67, 0x34, 0x77, 0x79, 0x74, 0x6b, 0x41, 0x45, 0x48, 0x62, 0x39, 0x32,
+  0x31, 0x4e, 0x33, 0x6d, 0x0a, // PVFu3b...3m\n
+  0x31, 0x77, 0x67, 0x78, 0x32, 0x63, 0x77, 0x72, 0x68, 0x57, 0x4e, 0x35,
+  0x69, 0x75, 0x47, 0x30, 0x56, 0x4c, 0x70, 0x42, 0x54, 0x41, 0x6b, 0x43,
+  0x41, 0x77, 0x45, 0x41, 0x41, 0x51, 0x3d, 0x3d, 0x0a, // 1wgx2cwrhWN5iuG0VLpBTAkCAwEAAQ==\n
+  0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x45, 0x4e, 0x44, 0x20, 0x50, 0x55, 0x42,
+  0x4c, 0x49, 0x43, 0x20, 0x4b, 0x45, 0x59, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d,
+  0x0a  // -----END PUBLIC KEY-----\n
+};
+
+static const size_t EMBEDDED_PUBLIC_KEY_LEN = sizeof(EMBEDDED_PUBLIC_KEY);
+
+// ---- Base64url helpers ----
+
+static std::vector<unsigned char> Base64UrlDecode(const std::string& input) {
+  // Convert base64url to standard base64
+  std::string b64 = input;
+  std::replace(b64.begin(), b64.end(), '-', '+');
+  std::replace(b64.begin(), b64.end(), '_', '/');
+
+  // Pad
+  while (b64.size() % 4 != 0) {
+    b64 += '=';
+  }
+
+  BIO* bio = BIO_new_mem_buf(b64.data(), static_cast<int>(b64.size()));
+  BIO* b64Bio = BIO_new(BIO_f_base64());
+  BIO_set_flags(b64Bio, BIO_FLAGS_BASE64_NO_NL);
+  bio = BIO_push(b64Bio, bio);
+
+  std::vector<unsigned char> output(b64.size());
+  int decoded = BIO_read(bio, output.data(), static_cast<int>(output.size()));
+  BIO_free_all(bio);
+
+  if (decoded < 0) return {};
+  output.resize(decoded);
+  return output;
+}
+
+// ---- JWT Split ----
+
+struct JwtParts {
+  std::string header;
+  std::string payload;
+  std::string signature;
+  std::string signedData;  // header.payload (for verification)
+};
+
+static bool SplitJwt(const std::string& token, JwtParts& parts) {
+  size_t dot1 = token.find('.');
+  if (dot1 == std::string::npos) return false;
+
+  size_t dot2 = token.find('.', dot1 + 1);
+  if (dot2 == std::string::npos) return false;
+
+  // No more dots
+  if (token.find('.', dot2 + 1) != std::string::npos) return false;
+
+  parts.header = token.substr(0, dot1);
+  parts.payload = token.substr(dot1 + 1, dot2 - dot1 - 1);
+  parts.signature = token.substr(dot2 + 1);
+  parts.signedData = token.substr(0, dot2);
+
+  return true;
+}
+
+// ---- RSA Verification ----
+
+static bool VerifyRS256(const std::string& signedData,
+                        const std::vector<unsigned char>& signature) {
+  // Load embedded public key
+  BIO* bio = BIO_new_mem_buf(EMBEDDED_PUBLIC_KEY, static_cast<int>(EMBEDDED_PUBLIC_KEY_LEN));
+  if (!bio) return false;
+
+  EVP_PKEY* pkey = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
+  BIO_free(bio);
+  if (!pkey) return false;
+
+  EVP_MD_CTX* mdCtx = EVP_MD_CTX_new();
+  if (!mdCtx) {
+    EVP_PKEY_free(pkey);
+    return false;
+  }
+
+  bool valid = false;
+
+  if (EVP_DigestVerifyInit(mdCtx, nullptr, EVP_sha256(), nullptr, pkey) == 1) {
+    if (EVP_DigestVerifyUpdate(mdCtx, signedData.c_str(), signedData.size()) == 1) {
+      int rc = EVP_DigestVerifyFinal(mdCtx, signature.data(), signature.size());
+      valid = (rc == 1);
+    }
+  }
+
+  EVP_MD_CTX_free(mdCtx);
+  EVP_PKEY_free(pkey);
+
+  return valid;
+}
+
+// ---- Current time ----
+
+static int64_t NowUnixSeconds() {
+  auto now = std::chrono::system_clock::now();
+  auto epoch = now.time_since_epoch();
+  return std::chrono::duration_cast<std::chrono::seconds>(epoch).count();
+}
+
+// ---- N-API: verifyLicenseJwt ----
+
+static Napi::Value VerifyLicenseJwt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1 || !info[0].IsString()) {
+    Napi::Error::New(env, "Expected (String token)").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  std::string token = info[0].As<Napi::String>().Utf8Value();
+
+  Napi::Object result = Napi::Object::New(env);
+
+  // Split JWT
+  JwtParts parts;
+  if (!SplitJwt(token, parts)) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Invalid JWT format"));
+    return result;
+  }
+
+  // Decode header to check algorithm
+  auto headerBytes = Base64UrlDecode(parts.header);
+  if (headerBytes.empty()) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Failed to decode JWT header"));
+    return result;
+  }
+
+  try {
+    auto headerJson = nlohmann::json::parse(headerBytes.begin(), headerBytes.end());
+    std::string alg = headerJson.value("alg", "");
+    if (alg != "RS256") {
+      result.Set("valid", Napi::Boolean::New(env, false));
+      result.Set("error", Napi::String::New(env, "Unsupported algorithm: " + alg));
+      return result;
+    }
+  } catch (...) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Failed to parse JWT header"));
+    return result;
+  }
+
+  // Decode signature
+  auto sigBytes = Base64UrlDecode(parts.signature);
+  if (sigBytes.empty()) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Failed to decode JWT signature"));
+    return result;
+  }
+
+  // Verify RS256 signature
+  if (!VerifyRS256(parts.signedData, sigBytes)) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Invalid license signature"));
+    return result;
+  }
+
+  // Decode payload
+  auto payloadBytes = Base64UrlDecode(parts.payload);
+  if (payloadBytes.empty()) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Failed to decode JWT payload"));
+    return result;
+  }
+
+  nlohmann::json payloadJson;
+  try {
+    payloadJson = nlohmann::json::parse(payloadBytes.begin(), payloadBytes.end());
+  } catch (...) {
+    result.Set("valid", Napi::Boolean::New(env, false));
+    result.Set("error", Napi::String::New(env, "Failed to parse JWT payload"));
+    return result;
+  }
+
+  // Validate claims
+  int64_t now = NowUnixSeconds();
+
+  // Check expiration
+  if (payloadJson.contains("exp") && payloadJson["exp"].is_number()) {
+    int64_t exp = payloadJson["exp"].get<int64_t>();
+    if (exp < now) {
+      result.Set("valid", Napi::Boolean::New(env, false));
+      result.Set("error", Napi::String::New(env, "License has expired"));
+      return result;
+    }
+  }
+
+  // Check not-before
+  if (payloadJson.contains("nbf") && payloadJson["nbf"].is_number()) {
+    int64_t nbf = payloadJson["nbf"].get<int64_t>();
+    if (nbf > now) {
+      result.Set("valid", Napi::Boolean::New(env, false));
+      result.Set("error", Napi::String::New(env, "License is not yet valid"));
+      return result;
+    }
+  }
+
+  // Build payload object for JS
+  Napi::Object payload = Napi::Object::New(env);
+
+  auto setStringField = [&](const char* key) {
+    if (payloadJson.contains(key) && payloadJson[key].is_string()) {
+      payload.Set(key, Napi::String::New(env, payloadJson[key].get<std::string>()));
+    }
+  };
+
+  auto setNumberField = [&](const char* key) {
+    if (payloadJson.contains(key) && payloadJson[key].is_number()) {
+      payload.Set(key, Napi::Number::New(env, payloadJson[key].get<double>()));
+    }
+  };
+
+  auto setBoolField = [&](const char* key) {
+    if (payloadJson.contains(key) && payloadJson[key].is_boolean()) {
+      payload.Set(key, Napi::Boolean::New(env, payloadJson[key].get<bool>()));
+    }
+  };
+
+  setStringField("sub");
+  setStringField("iss");
+  setStringField("aud");
+  setNumberField("exp");
+  setNumberField("iat");
+  setNumberField("nbf");
+  setStringField("type");
+  setStringField("tierKey");
+  setStringField("tierName");
+  setStringField("grantType");
+  setBoolField("isBeta");
+  setStringField("productType");
+  setStringField("organizationId");
+  setStringField("userId");
+
+  // Features object
+  if (payloadJson.contains("features") && payloadJson["features"].is_object()) {
+    Napi::Object features = Napi::Object::New(env);
+    for (auto& [key, val] : payloadJson["features"].items()) {
+      if (val.is_boolean()) {
+        features.Set(key, Napi::Boolean::New(env, val.get<bool>()));
+      }
+    }
+    payload.Set("features", features);
+  }
+
+  // Limits object
+  if (payloadJson.contains("limits") && payloadJson["limits"].is_object()) {
+    Napi::Object limits = Napi::Object::New(env);
+    for (auto& [key, val] : payloadJson["limits"].items()) {
+      if (val.is_number()) {
+        limits.Set(key, Napi::Number::New(env, val.get<double>()));
+      }
+    }
+    payload.Set("limits", limits);
+  }
+
+  result.Set("valid", Napi::Boolean::New(env, true));
+  result.Set("payload", payload);
+
+  return result;
+}
+
+// ---- N-API: parseLicenseKey ----
+
+static Napi::Value ParseLicenseKey(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1 || !info[0].IsString()) {
+    return env.Null();
+  }
+
+  std::string key = info[0].As<Napi::String>().Utf8Value();
+
+  // Pattern 1: JWT-based keys - ^(np|nd|na)-(<JWT>)$
+  // JWT has format: base64url.base64url.base64url
+  static const std::regex jwtPattern(
+      "^(np|nd|na)-([A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+)$",
+      std::regex::icase);
+
+  std::smatch match;
+  if (std::regex_match(key, match, jwtPattern)) {
+    std::string prefix = match[1].str();
+    std::transform(prefix.begin(), prefix.end(), prefix.begin(), ::tolower);
+
+    Napi::Object result = Napi::Object::New(env);
+    result.Set("prefix", Napi::String::New(env, prefix));
+    result.Set("jwt", Napi::String::New(env, match[2].str()));
+    return result;
+  }
+
+  // Pattern 2: Opaque key - NA-XXXXX-XXXXX-XXXXX-XXXXX (Crockford Base32)
+  static const std::regex opaquePattern(
+      "^NA-[0-9A-HJKMNP-TV-Z]{5}-[0-9A-HJKMNP-TV-Z]{5}-[0-9A-HJKMNP-TV-Z]{5}-[0-9A-HJKMNP-TV-Z]{5}$",
+      std::regex::icase);
+
+  if (std::regex_match(key, opaquePattern)) {
+    Napi::Object result = Napi::Object::New(env);
+    result.Set("prefix", Napi::String::New(env, "na"));
+    // No jwt field for opaque keys
+    return result;
+  }
+
+  return env.Null();
+}
+
+// ---- Registration ----
+
+void RegisterLicenseVerify(Napi::Env env, Napi::Object exports) {
+  exports.Set("verifyLicenseJwt", Napi::Function::New(env, VerifyLicenseJwt));
+  exports.Set("parseLicenseKey", Napi::Function::New(env, ParseLicenseKey));
+}
+
+}  // namespace notely

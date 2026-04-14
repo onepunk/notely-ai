@@ -1,0 +1,131 @@
+/* License Activation Flow Dialog */
+
+.surface {
+  max-width: 480px;
+  background: var(--bg-container);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-height: 200px;
+}
+
+.messageBar {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Step Container */
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-md) 0;
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.stepIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.successIcon {
+  background: rgb(59 178 115 / 15%);
+  color: #3bb273;
+}
+
+.stepDescription {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+.field {
+  width: 100%;
+  text-align: left;
+}
+
+/* Success State */
+.successTitle {
+  display: block;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.successDetails {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) 0;
+}
+
+.detailRow:not(:last-child) {
+  border-bottom: 1px solid var(--stroke);
+}
+
+.detailLabel {
+  color: var(--text-tertiary);
+  min-width: 60px;
+}
+
+.featuresRow {
+  padding: var(--spacing-sm) 0;
+}
+
+.featureList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+}
+
+.featureTag {
+  display: inline-flex;
+  padding: 3px 8px;
+  background: rgb(var(--brand-rgb) / 12%);
+  color: var(--brand-secondary);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.offlineNote {
+  display: block;
+  margin-top: var(--spacing-lg);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Activating Indicator */
+.activatingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  color: var(--text-secondary);
+}

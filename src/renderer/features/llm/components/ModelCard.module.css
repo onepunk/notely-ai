@@ -1,0 +1,203 @@
+.modelCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  transition: border-color 150ms ease;
+}
+
+.modelCard:hover {
+  border-color: var(--text-tertiary);
+}
+
+.modelCard.incompatible {
+  opacity: 0.6;
+}
+
+.modelHeader {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.deleteButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.modelInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modelName {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.modelDescription {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.modelStats {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.modelStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  color: var(--text-tertiary);
+}
+
+.quality {
+  color: var(--brand-primary);
+  font-weight: 500;
+}
+
+.compatWarning {
+  color: rgb(209 52 56);
+  padding: var(--spacing-sm);
+  background: rgb(209 52 56 / 8%);
+  border-radius: var(--radius-sm);
+}
+
+.healthWarning {
+  color: rgb(196 148 0);
+  padding: var(--spacing-sm);
+  background: rgb(196 148 0 / 8%);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.healthWarningIcon {
+  color: rgb(196 148 0);
+  flex-shrink: 0;
+}
+
+.modelActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  margin-top: auto;
+}
+
+.lockIcon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.customBadge {
+  font-size: 11px;
+}
+
+.recommendedBadge {
+  font-size: 11px;
+}
+
+.vramBarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vramBar {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 8%);
+  overflow: visible;
+}
+
+.vramBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 300ms ease;
+}
+
+.vramBar_success {
+  background: rgb(16 124 16);
+}
+
+.vramBar_warning {
+  background: rgb(16 124 16);
+}
+
+.vramBar_error {
+  background: rgb(16 124 16);
+}
+
+.vramBarMark {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  border-left: 1px solid var(--text-tertiary);
+  opacity: 0.5;
+}
+
+.vramBarMarkLabel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.vramBarTopRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.systemVramValue {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.vramBarBottomRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vramBarLabel {
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.systemVramLabel {
+  color: var(--text-tertiary);
+  font-size: 10px;
+}
+
+@media (max-width: 640px) {
+  .modelStats {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .modelActions {
+    flex-wrap: wrap;
+  }
+}

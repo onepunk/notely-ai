@@ -1,0 +1,22 @@
+.connected {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: rgb(16 124 16);
+}
+
+.connectedIcon {
+  color: rgb(16 124 16);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.inputField {
+  flex: 1;
+  min-width: 200px;
+}

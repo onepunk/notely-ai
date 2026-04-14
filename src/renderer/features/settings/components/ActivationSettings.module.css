@@ -1,0 +1,166 @@
+/* Activation Settings - Standalone License Activation UI */
+
+.messageBar {
+  margin-bottom: var(--spacing-md);
+}
+
+.loadingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+/* Status Card */
+.statusCard {
+  padding: var(--spacing-lg);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--stroke);
+}
+
+.notActivatedCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--spacing-lg);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--stroke);
+}
+
+.statusActive {
+  background: rgb(59 178 115 / 15%);
+  color: #3bb273;
+}
+
+.statusTitle {
+  font-size: 16px;
+}
+
+.statusSubtitle {
+  color: var(--text-secondary);
+}
+
+/* Details Grid */
+.detailsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0;
+  border-top: 1px solid var(--stroke);
+  border-bottom: 1px solid var(--stroke);
+}
+
+.detailRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.detailIcon {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detailLabel {
+  color: var(--text-tertiary);
+}
+
+.daysRemaining {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Features Section */
+.featuresSection {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+}
+
+.sectionLabel {
+  color: var(--text-tertiary);
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+.featureList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.featureTag {
+  display: inline-flex;
+  padding: 4px 10px;
+  background: rgb(var(--brand-rgb) / 12%);
+  color: var(--brand-secondary);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Action Row */
+.actionRow {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.deactivateButton {
+  color: var(--text-secondary);
+}
+
+.deactivateButton:hover {
+  color: #e74c3c;
+}
+
+.activateButton {
+  min-width: 140px;
+}
+
+.buttonRow {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
+/* About Card */
+.aboutCard {
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--stroke);
+}
+
+.aboutText {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.aboutLinks {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.link {
+  color: var(--brand-secondary);
+  padding: 0;
+  min-width: auto;
+  height: auto;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

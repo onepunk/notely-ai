@@ -1,0 +1,26 @@
+{
+  "name": "notely-native",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Notely native addon for security-critical operations",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "cmake-js compile",
+    "build:debug": "cmake-js compile --debug",
+    "rebuild": "cmake-js rebuild",
+    "clean": "cmake-js clean"
+  },
+  "dependencies": {
+    "node-addon-api": "^8.0.0"
+  },
+  "devDependencies": {
+    "cmake-js": "^7.3.0"
+  },
+  "binary": {
+    "napi_versions": [
+      8
+    ]
+  }
+}

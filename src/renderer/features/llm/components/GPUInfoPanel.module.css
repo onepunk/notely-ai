@@ -1,0 +1,116 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+}
+
+.compact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compactHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.compactStats {
+  color: var(--text-tertiary);
+  margin-left: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.headerText {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.gpuName {
+  font-size: var(--font-size-base);
+}
+
+.badge {
+  font-size: var(--font-size-xs);
+}
+
+.loading {
+  color: var(--text-tertiary);
+  padding: var(--spacing-md) 0;
+}
+
+.errorBox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: rgb(209 52 56 / 8%);
+  border: 1px solid rgb(209 52 56 / 20%);
+  border-radius: var(--radius-sm);
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statLabel {
+  color: var(--text-tertiary);
+}
+
+.statValue {
+  font-weight: 500;
+}
+
+
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--stroke);
+}
+
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+}
+
+.warningIcon {
+  color: rgb(255 185 0);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.success {
+  color: rgb(16 124 16);
+}
+
+.warning {
+  color: rgb(255 185 0);
+}
+
+.danger {
+  color: rgb(209 52 56);
+}

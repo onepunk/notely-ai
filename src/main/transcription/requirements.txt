@@ -1,0 +1,24 @@
+fastapi>=0.104.0
+uvicorn>=0.24.0
+websockets>=11.0
+python-multipart>=0.0.9
+numpy>=1.24.0
+
+# PyTorch — GPU is required, CPU-only is not supported
+# Install the appropriate GPU-accelerated variant for your system BEFORE running pip install -r requirements.txt:
+#   - CUDA (Linux/Windows): pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124
+#   - CPU (macOS/testing):  pip install torch torchaudio
+
+# faster-whisper engine
+faster-whisper>=1.0.0
+ctranslate2>=3.20.0
+soundfile>=0.12.0
+
+# Performance and testing
+jiwer>=3.0.0
+psutil>=5.9.0
+scipy>=1.10.0
+
+# Voice Activity Detection
+silero-vad>=5.1
+onnxruntime>=1.16.0

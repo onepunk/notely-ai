@@ -1,0 +1,293 @@
+{
+  "name": "notely-ai",
+  "private": false,
+  "version": "1.0.6",
+  "description": "Notely AI - Local AI-powered meeting notes with offline transcription and summarization",
+  "author": {
+    "name": "Notely",
+    "email": "support@example.com"
+  },
+  "homepage": "https://yourdomain.com",
+  "license": "Apache-2.0",
+  "main": "dist-electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/clean-dev.cjs && vite --host",
+    "build:native": "cd native && npm install && npm run build",
+    "build:llm": "cd src/main/llm && bash build-nuitka.sh",
+    "build": "npm run build:native && vite build && vite build --config vite.main.config.ts && vite build --config vite.preload.config.ts && node scripts/verify-main-build.cjs && node scripts/obfuscate.cjs && node scripts/compile-bytecode.cjs",
+    "verify-build": "node scripts/verify-main-build.cjs",
+    "start": "electron .",
+    "electron:rebuild": "electron-rebuild",
+    "build:win": "node scripts/build-win.cjs",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:linux:signed": "electron-builder --linux && ./scripts/sign-linux-packages.sh",
+    "sign:linux": "./scripts/sign-linux-packages.sh",
+    "gpg:keygen": "./scripts/gpg-keygen.sh",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:ts": "eslint . --ext .ts,.tsx --max-warnings=0",
+    "lint": "npm run lint:ts",
+    "format": "prettier --write .",
+    "typecheck:base": "tsc -p tsconfig.json --noEmit",
+    "typecheck:strict": "tsc -p tsconfig.sync.json --noEmit",
+    "typecheck": "npm run typecheck:base",
+    "prepare": "husky",
+    "postinstall": "electron-builder install-app-deps",
+    "cli:transcribe": "cd src/main/transcription && LD_LIBRARY_PATH=.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:$LD_LIBRARY_PATH .venv/bin/python cli.py transcribe",
+    "validate:transcription": "./scripts/validate-transcription.sh",
+    "validate:transcription:memory": "./scripts/monitor-transcription-memory.sh",
+    "validate:transcription:wer": "python scripts/calculate-wer.py",
+    "release": "standard-version",
+    "release:patch": "standard-version --release-as patch",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:dry": "standard-version --dry-run",
+    "release:notes": "node scripts/generate-release-notes.cjs"
+  },
+  "build": {
+    "afterPack": "./scripts/afterPack.cjs",
+    "appId": "ai.notely.app",
+    "productName": "Notely AI",
+    "icon": "build/icon",
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/better-sqlite3-multiple-ciphers/build/Release/better_sqlite3.node",
+      "native/build/Release/notely_native.node",
+      "native/build/Release/*.dll"
+    ],
+    "files": [
+      "dist/renderer/**",
+      "dist-electron/**",
+      "native/build/Release/notely_native.node",
+      "native/build/Release/*.dll",
+      "native/index.js",
+      "native/package.json",
+      "node_modules/bytenode/**",
+      "package.json",
+      "!node_modules/better-sqlite3-multiple-ciphers/deps/**",
+      "!node_modules/better-sqlite3-multiple-ciphers/src/**",
+      "!node_modules/moment/src/**",
+      "!node_modules/moment/dist/locale/**",
+      "!node_modules/moment/locale/**",
+      "!node_modules/moment/min/*.map",
+      "!node_modules/fecha/src/**",
+      "!node_modules/fecha/**/*.map",
+      "!node_modules/prebuild-install/**",
+      "!node_modules/napi-build-utils/**",
+      "!node_modules/node-abi/**",
+      "!node_modules/github-from-package/**",
+      "!node_modules/simple-get/**",
+      "!node_modules/simple-concat/**",
+      "!node_modules/tar-fs/**",
+      "!node_modules/tar-stream/**",
+      "!node_modules/tunnel-agent/**",
+      "!node_modules/decompress-response/**",
+      "!node_modules/mimic-response/**",
+      "!node_modules/expand-template/**",
+      "!node_modules/detect-libc/**",
+      "!node_modules/rc/**",
+      "!node_modules/deep-extend/**",
+      "!node_modules/strip-json-comments/**",
+      "!node_modules/ini/**",
+      "!node_modules/mkdirp-classic/**",
+      "!node_modules/chownr/**",
+      "!node_modules/fs-constants/**",
+      "!node_modules/end-of-stream/**",
+      "!node_modules/pump/**",
+      "!**/*.map",
+      "!**/*.d.ts"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "extraResources": [
+      {
+        "from": "resources/logo.png",
+        "to": "logo.png"
+      },
+      {
+        "from": "src/security/license-public-key.pem",
+        "to": "license-public-key.pem"
+      }
+    ],
+    "publish": {
+      "provider": "generic",
+      "url": "https://get.yourdomain.com/releases/ai"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": true,
+      "artifactName": "Notely_AI_Setup_${version}.${ext}",
+      "include": "build/installer.nsh"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker",
+      "signtoolOptions": {
+        "publisherName": "Notely Limited",
+        "sign": "./scripts/customSign.cjs",
+        "signingHashAlgorithms": [
+          "sha256"
+        ]
+      }
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": false,
+      "extendInfo": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false,
+          "NSAllowsLocalNetworking": true
+        }
+      }
+    },
+    "linux": {
+      "executableName": "notely-ai",
+      "synopsis": "Local AI-powered meeting notes with on-device AI",
+      "description": "Notely AI - Local AI-powered meeting notes with offline transcription and summarization. Run your own LLM locally with GPU acceleration for complete privacy.",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Office"
+    },
+    "deb": {
+      "packageName": "notely-ai",
+      "depends": [
+        "libsecret-1-0",
+        "gnome-keyring"
+      ]
+    },
+    "protocols": [
+      {
+        "name": "Notely AI Protocol",
+        "schemes": [
+          "notely-ai"
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "@types/archiver": "^7.0.0",
+    "archiver": "^7.0.1",
+    "better-sqlite3-multiple-ciphers": "^12.6.0",
+    "bytenode": "^1.5.7",
+    "jsonwebtoken": "^9.0.2",
+    "winston": "^3.13.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/sortable": "^7.0.2",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@electron/rebuild": "^4.0.3",
+    "@fluentui/react-components": "^9.52.0",
+    "@fluentui/react-icons": "^2.0.261",
+    "@lexical/react": "^0.14.5",
+    "@types/dompurify": "^3.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/node": "^20.19.13",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "depcheck": "^1.4.7",
+    "docx": "^9.5.1",
+    "dompurify": "^3.3.0",
+    "electron": "^39.2.7",
+    "electron-audio-loopback": "^1.0.6",
+    "electron-builder": "^26.7.0",
+    "electron-updater": "^6.7.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "fuse.js": "^7.0.0",
+    "husky": "^9.1.4",
+    "i18next": "^25.4.1",
+    "javascript-obfuscator": "^4.2.2",
+    "lexical": "^0.14.5",
+    "lint-staged": "^15.2.9",
+    "lodash.debounce": "^4.0.8",
+    "lucide-react": "^0.545.0",
+    "madge": "^8.0.0",
+    "pdf-lib": "^1.17.1",
+    "png2icons": "^2.0.1",
+    "postcss": "^8.4.41",
+    "prettier": "^3.3.3",
+    "react": "^18.3.1",
+    "react-colorful": "^5.6.1",
+    "react-dom": "^18.3.1",
+    "react-i18next": "^15.0.1",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^6.23.1",
+    "sonner": "^1.5.0",
+    "standard-version": "^9.5.0",
+    "stylelint": "^16.7.0",
+    "stylelint-config-css-modules": "^4.4.0",
+    "stylelint-config-standard": "^36.0.0",
+    "terser": "^5.46.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.4.0",
+    "vite-plugin-electron": "^0.28.7",
+    "zod": "^3.23.8",
+    "zustand": "^4.5.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  }
+}

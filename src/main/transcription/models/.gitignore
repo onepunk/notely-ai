@@ -1,0 +1,4 @@
+# Ignore Whisper model files in this directory
+# Keep this placeholder so the directory exists in the repo
+*
+!.gitignore

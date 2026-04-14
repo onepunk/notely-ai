@@ -1,0 +1,36 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+  transition: all 150ms ease;
+}
+
+.button.active {
+  background: var(--brand-primary);
+  color: white;
+}
+
+.button.active:hover {
+  background: var(--brand-primary-hover, var(--brand-primary));
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+@media (max-width: 768px) {
+  .label {
+    display: none;
+  }
+
+  .button {
+    min-width: auto;
+    padding: 6px;
+  }
+}

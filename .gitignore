@@ -1,0 +1,121 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+dist-electron/
+build/*
+!build/icon.png
+!build/installer.nsh
+!build/entitlements.mac.plist
+!build/signing/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Electron specific
+app/dist/
+release/
+*.dmg
+*.exe
+*.deb
+*.rpm
+*.snap
+
+# Local settings
+.claude/settings.local.json
+
+# Temporary files
+*.tmp
+*.temp
+
+# Whisper build directory
+whisper-build/
+
+# Python virtual environments
+.venv/
+venv/
+venv-*/
+env/
+**/transcription/.venv/
+**/transcription/venv-*/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Machine learning model files
+*.pt
+*.pth
+*.onnx
+*.bin
+*.safetensors
+*.gguf
+
+# Temporary files directory
+tmp/
+# Binary files
+resources/whisper-server/whisper-server
+resources/audio-engine-arm64/audio-engine
+
+# GPG signing keys (NEVER commit these)
+build/signing/*.key
+build/signing/*.gpg
+*.asc
+!build/signing/*.pub
+src/main/transcription/build/
+
+# Native addon build artifacts
+native/build/
+
+# Playwright reports
+playwright-report/
+
+# Test audio fixtures (large files, not committed)
+tests/fixtures/audio/*.wav
+tests/fixtures/audio/*.mp3
+tests/fixtures/audio/*.flac
+tests/fixtures/audio/*.ogg
+tests/fixtures/audio/*.m4a
+
+# License cache fixture (contains a real signed JWT; must be generated locally)
+tests/fixtures/license-cache.json

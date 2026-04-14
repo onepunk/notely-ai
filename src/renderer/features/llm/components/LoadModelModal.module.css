@@ -1,0 +1,100 @@
+.surface {
+  max-width: 460px;
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.title {
+  font-weight: 600;
+  font-size: var(--fontSizeBase400);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) 0;
+}
+
+.description {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-size: var(--fontSizeBase300);
+}
+
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: rgb(209 52 56 / 8%);
+  border: 1px solid rgb(209 52 56 / 20%);
+  border-radius: var(--radius-md);
+}
+
+.warningIcon {
+  color: rgb(209 52 56);
+  flex-shrink: 0;
+}
+
+.warningText {
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.dropdown {
+  width: 100%;
+}
+
+.modelInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--stroke);
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoLabel {
+  color: var(--text-tertiary);
+}
+
+.quality {
+  padding: 2px 8px;
+  background: var(--brand-primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.errorText {
+  color: rgb(209 52 56);
+}
+
+.inlineLink {
+  cursor: pointer;
+  font-size: inherit;
+  display: inline;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-md);
+}

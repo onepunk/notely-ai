@@ -1,0 +1,122 @@
+.currentModel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+}
+
+.currentModelInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.currentModelIcon {
+  color: var(--brand-primary);
+}
+
+.currentModelStats {
+  color: var(--text-tertiary);
+}
+
+.loadingState {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.noModel {
+  color: var(--text-tertiary);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.errorText {
+  color: rgb(209 52 56);
+  margin-top: var(--spacing-sm);
+}
+
+.modelList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.tierSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.tierHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.tierDesc {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.recommendedBadge {
+  margin-left: var(--spacing-sm);
+}
+
+.activeDownloads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.promptEditorDialog {
+  max-width: 700px;
+  width: 90vw;
+  max-height: 80vh;
+}
+
+.licenseRequired {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+}
+
+.licenseIcon {
+  color: var(--brand-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.licenseText {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.licenseButtons {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+@media (max-width: 640px) {
+  .modelList {
+    gap: var(--spacing-sm);
+  }
+}

@@ -1,0 +1,59 @@
+/* Preferences Settings */
+
+/* Theme Selector */
+.themeSelector {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.themeOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-container);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 100px;
+}
+
+.themeOption:hover {
+  border-color: var(--text-tertiary);
+}
+
+.themeSelected {
+  border-color: rgb(var(--brand-rgb) / 60%);
+  background: rgb(var(--brand-rgb) / 8%);
+}
+
+.themePreview {
+  width: 48px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--stroke);
+}
+
+.themeSystem {
+  background: linear-gradient(135deg, #f5f5f5 50%, #1a1a1a 50%);
+}
+
+.themeLight {
+  background: #f5f5f5;
+}
+
+.themeDark {
+  background: #1a1a1a;
+}
+
+.themeLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Language Dropdown */
+.languageDropdown {
+  max-width: 280px;
+}

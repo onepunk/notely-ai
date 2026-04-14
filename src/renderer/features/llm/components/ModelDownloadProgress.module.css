@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+}
+
+.container.hasError {
+  border-color: rgb(209 52 56 / 30%);
+  background: rgb(209 52 56 / 5%);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.stats {
+  color: var(--text-tertiary);
+}
+
+.errorText {
+  color: rgb(209 52 56);
+}
+
+.cancelButton {
+  flex-shrink: 0;
+  margin-top: -4px;
+  margin-right: -4px;
+}
+
+.progress {
+  height: 4px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.listTitle {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}

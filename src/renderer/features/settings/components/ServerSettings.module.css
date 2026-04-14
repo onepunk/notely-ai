@@ -1,0 +1,125 @@
+.loadingRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.messageBar {
+  margin-bottom: var(--spacing-lg);
+}
+
+.switchField :global(.fui-Field__label) {
+  color: var(--text-primary);
+}
+
+.providerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.providerButton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--stroke);
+  background: var(--bg-container);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.providerButton:hover {
+  border-color: rgb(var(--brand-rgb) / 35%);
+  box-shadow: 0 12px 28px rgb(15 23 42 / 8%);
+  transform: translateY(-2px);
+}
+
+.providerButton:focus-visible {
+  outline: 2px solid rgb(var(--brand-rgb) / 45%);
+  outline-offset: 2px;
+}
+
+.providerSelected {
+  border-color: rgb(var(--brand-rgb) / 45%);
+  background: var(--bg-subtle);
+}
+
+.providerTitle {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.providerDescription {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.serverField {
+  max-width: 480px;
+}
+
+.statusStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.statusLabel {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.statusConnected {
+  color: var(--colorPaletteGreenForeground1, #107c10);
+}
+
+.statusDisconnected {
+  color: var(--colorPaletteRedForeground1, #ca5010);
+}
+
+.manualSync {
+  margin-top: var(--spacing-md);
+}
+
+.footerActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.credentialsNotice {
+  max-width: 440px;
+  margin-bottom: var(--spacing-md);
+}
+
+.signInRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.signInSpinner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+@media (max-width: 640px) {
+  .providerGrid {
+    grid-template-columns: 1fr;
+  }
+}

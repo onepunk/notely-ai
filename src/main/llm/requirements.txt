@@ -1,0 +1,19 @@
+# Notely Standalone LLM Server Dependencies
+# For local LLM inference using llama.cpp
+
+# FastAPI server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# LLM inference — GPU acceleration required
+# Windows/Linux (CUDA 12.x): pip install llama-cpp-python --index-url https://abetlen.github.io/llama-cpp-python/whl/cu124 --extra-index-url https://pypi.org/simple
+# macOS (Apple Silicon Metal): CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python
+# Then install remaining deps: pip install -r requirements.txt
+llama-cpp-python>=0.3.4
+
+# NLP utilities for sentence tokenization
+nltk>=3.8.0
+
+# HTTP client for potential external calls
+httpx>=0.25.0
